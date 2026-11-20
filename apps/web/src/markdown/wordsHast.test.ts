@@ -239,6 +239,16 @@ describe("wordsHast", () => {
     expect(html).toContain('aria-label="x^2"');
   });
 
+  it("shows Markdown the renderer fails on as its source, and renders the next as before", () => {
+    const options = { ...ASSISTANT, math: true };
+    const before = toHtml(wordsHast("$x^2$ and **bold**", options));
+    const source = "Pasted: $a\u001bb + c$ <b>&amp; text\n\nnext paragraph";
+    expect(toHtml(wordsHast(source, options))).toBe(
+      '<p dir="ltr">Pasted: $a\u001bb + c$ &#x3C;b>&#x26;amp; text<br><br>next paragraph</p>',
+    );
+    expect(toHtml(wordsHast("$x^2$ and **bold**", options))).toBe(before);
+  });
+
   it.each([
     ["$\\ce{H2O}$", '<span class="whitespace-pre-wrap">\\(\\ce{H2O}\\)</span>'],
     ["$\\frac{1}{$", '<span class="whitespace-pre-wrap">\\(\\frac{1}{\\)</span>'],
