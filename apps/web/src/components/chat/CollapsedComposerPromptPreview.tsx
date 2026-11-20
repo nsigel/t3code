@@ -22,6 +22,8 @@ import type {
   ComposerDraftContextRecords,
 } from "../composerContextPresentation";
 import { ContextChip, ContextChipLabel } from "../ContextChip";
+import { CitationText } from "./CitationText";
+import { CITATION_CHIP_LENGTH, citationLabelSource } from "./CitationText.logic";
 import { ContextChipShell } from "../contextChipParts";
 import { PierreEntryIcon } from "./PierreEntryIcon";
 import { SkillChipIcon } from "./SkillInlineText";
@@ -78,8 +80,13 @@ export function CollapsedComposerPromptPreview(props: {
         return (
           <ContextChip key={key} kind="citation">
             <QuoteIcon aria-hidden="true" />
-            <ContextChipLabel className="max-w-[16em]">
-              {assistantCitationLabel(segment.citation)}
+            <ContextChipLabel className="max-w-[16em] has-data-markdown-math:text-clip">
+              <CitationText
+                text={citationLabelSource(segment.citation)}
+                maxLength={CITATION_CHIP_LENGTH}
+              >
+                {assistantCitationLabel(segment.citation)}
+              </CitationText>
             </ContextChipLabel>
           </ContextChip>
         );
