@@ -31,6 +31,12 @@ import { AssistantCitationCommentEditor } from "./AssistantCitationCommentEditor
 import { resolveAssistantCitationCommentDismissal } from "./assistantCitationCommentDismissal";
 import { observeAssistantCitationCommentSource } from "./AssistantCitationSource";
 import { composerFloatingLayerProps } from "./composerEventScope";
+import { CitationText } from "./CitationText";
+import {
+  CITATION_CARD_LENGTH,
+  CITATION_CHIP_LENGTH,
+  citationLabelSource,
+} from "./CitationText.logic";
 import { textDirection } from "~/textDirection";
 
 function useCitationSourceLinkProps(citation: AssistantCitation) {
@@ -137,14 +143,28 @@ export function AssistantCitationEmbed({
       trailing={trailing}
       preview={
         wholeResponse ? (
-          flat(citation.text)
+          <CitationText text={citation.text} maxLength={CITATION_CARD_LENGTH}>
+            {flat(citation.text)}
+          </CitationText>
         ) : (
           <>
-            {citation.prefix ? `…${flat(citation.prefix)}` : null}
+            {citation.prefix ? (
+              <>
+                {"…"}
+                <CitationText text={citation.prefix}>{flat(citation.prefix)}</CitationText>
+              </>
+            ) : null}
             <mark className="rounded-sm bg-foreground/12 px-0.5 text-foreground">
-              {flat(citation.text)}
+              <CitationText text={citation.text} maxLength={CITATION_CARD_LENGTH}>
+                {flat(citation.text)}
+              </CitationText>
             </mark>
-            {citation.suffix ? `${flat(citation.suffix)}…` : null}
+            {citation.suffix ? (
+              <>
+                <CitationText text={citation.suffix}>{flat(citation.suffix)}</CitationText>
+                {"…"}
+              </>
+            ) : null}
           </>
         )
       }
@@ -171,7 +191,11 @@ export function ResponseReplyCard({
       copyMarkdown={copyMarkdown}
       label={gt("Go to the response this replies to: {label}", { label: record.label })}
       title={record.subagents?.map((subagent) => subagent.title).join(", ")}
-      preview={flat(record.citation.text)}
+      preview={
+        <CitationText text={record.citation.text} maxLength={CITATION_CARD_LENGTH}>
+          {flat(record.citation.text)}
+        </CitationText>
+      }
       leading={leading}
       trailing={trailing}
     />
@@ -263,8 +287,13 @@ export function AssistantCitationChip({
       aria-label={gt("View cited assistant text: {label}", { label })}
     >
       <QuoteIcon aria-hidden="true" />
-      <ContextChipLabel className="max-w-[16em]" dir={textDirection(label)}>
-        {label}
+      <ContextChipLabel
+        className="max-w-[16em] has-data-markdown-math:text-clip"
+        dir={textDirection(label)}
+      >
+        <CitationText text={citationLabelSource(citation)} maxLength={CITATION_CHIP_LENGTH}>
+          {label}
+        </CitationText>
       </ContextChipLabel>
     </Link>
   );
