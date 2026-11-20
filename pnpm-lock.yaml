@@ -1110,8 +1110,8 @@ importers:
         specifier: 1.0.0-beta.6
         version: 1.0.0-beta.6(@pierre/theme@2.0.0)(@shikijs/themes@4.2.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(shiki@4.2.0)
       '@pierre/words':
-        specifier: file:deps/pierre-words-0.2.2-t3.3-2cbd9ca0.tgz
-        version: file:apps/web/deps/pierre-words-0.2.2-t3.3-2cbd9ca0.tgz(@pierre/highlights@0.5.1)(react@19.3.0)
+        specifier: file:deps/pierre-words-0.2.2-t3.4-d9077e73.tgz
+        version: file:apps/web/deps/pierre-words-0.2.2-t3.4-d9077e73.tgz(@pierre/highlights@0.5.1)(react@19.3.0)
       '@t3tools/client-runtime':
         specifier: workspace:*
         version: link:../../packages/client-runtime
@@ -6438,9 +6438,9 @@ packages:
       react: ^18.3.1 || ^19.0.0
       react-dom: ^18.3.1 || ^19.0.0
 
-  '@pierre/words@file:apps/web/deps/pierre-words-0.2.2-t3.3-2cbd9ca0.tgz':
-    resolution: {integrity: sha512-z5KejYXOy+VMJgSNQ+Y4U8vJwEf4ZGpWpy5IrfrV3PMJP3T7Rqb9ZECf4cMdoWTDNgYdGwrcBeUA3CJdwxi5Sw==, tarball: file:apps/web/deps/pierre-words-0.2.2-t3.3-2cbd9ca0.tgz}
-    version: 0.2.2-t3.3
+  '@pierre/words@file:apps/web/deps/pierre-words-0.2.2-t3.4-d9077e73.tgz':
+    resolution: {integrity: sha512-vpKz4xpaDh0WHFBmBzq7+qwVmslvIrSrn10c/e9S6qt6acMNe5ITNd0sj/hJ+KhydZO892fdLikPxrDRVQn5Hw==, tarball: file:apps/web/deps/pierre-words-0.2.2-t3.4-d9077e73.tgz}
+    version: 0.2.2-t3.4
     peerDependencies:
       '@pierre/highlights': '>=0.5.1'
       react: ^18.3.1 || ^19.0.0
@@ -16520,7 +16520,7 @@ snapshots:
       - '@shikijs/themes'
       - shiki
 
-  '@pierre/words@file:apps/web/deps/pierre-words-0.2.2-t3.3-2cbd9ca0.tgz(@pierre/highlights@0.5.1)(react@19.3.0)':
+  '@pierre/words@file:apps/web/deps/pierre-words-0.2.2-t3.4-d9077e73.tgz(@pierre/highlights@0.5.1)(react@19.3.0)':
     optionalDependencies:
       '@pierre/highlights': 0.5.1
       react: 19.3.0
