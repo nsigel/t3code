@@ -55,7 +55,13 @@ for (const entry of corpus) {
   if (only && !entry.id.includes(only)) continue;
   const display = entry.display === true;
   const markdown = display ? `$$\n${entry.tex}\n$$` : `a $${entry.tex}$ b`;
-  const tree = wordsHast(entry.markdown ?? markdown, OPTIONS);
+  let tree;
+  try {
+    tree = wordsHast(entry.markdown ?? markdown, OPTIONS);
+  } catch (error) {
+    rows.push({ id: entry.id, tex: entry.tex ?? entry.markdown, outcome: "crash", katexOk: null, want: entry.want ?? "drawn", unknown: [], drawn: "", problems: [`renderer threw: ${error.message}`] });
+    continue;
+  }
   const unknown = [];
   let drawn = "";
   let svgs = 0;

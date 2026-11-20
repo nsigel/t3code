@@ -1,6 +1,6 @@
 # LaTeX parity tools
 
-Used for nsigel/t3code#4. Not part of the product; this branch shares no history with it.
+Used for nsigel/t3code#19. Not part of the product; this branch shares no history with it.
 
 - `corpus.json`: the formulas. `tex` is one formula (`"display": true` for `$$…$$`), `markdown` is a whole message. `want` says what the reader should see when that is not simply "what KaTeX does": `drawn`, or `source` (the TeX stays readable as text).
 - `verify.mjs`: renders every entry with a checkout's own Markdown pipeline and with KaTeX, and fails an entry when the two disagree on whether a formula is drawn.
