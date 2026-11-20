@@ -240,6 +240,23 @@ describe("wordsHast", () => {
   });
 
   it.each([
+    ["$\\ce{H2O}$", '<span class="whitespace-pre-wrap">\\(\\ce{H2O}\\)</span>'],
+    ["$\\frac{1}{$", '<span class="whitespace-pre-wrap">\\(\\frac{1}{\\)</span>'],
+    ["$\\left( x$", '<span class="whitespace-pre-wrap">\\(\\left( x\\)</span>'],
+    [
+      "$$\n\\begin{pmatrix} 1 & 2\n$$",
+      '<span class="whitespace-pre-wrap">\\[\n\\begin{pmatrix} 1 &#x26; 2\n\\]</span>',
+    ],
+  ])("shows math Words cannot draw as its TeX source: %j", (markdown, source) => {
+    const html = wordsHtml(markdown, { math: true });
+    expect(html).not.toContain("<svg");
+    expect(html).toContain("data-markdown-copy=");
+    expect(html).toContain(source);
+    const preview = { fallback: "Thinking", maxLength: 80 };
+    expect(wordsHtml(markdown, { math: true, extensions: { preview } })).not.toMatch(/<svg|\n/);
+  });
+
+  it.each([
     [
       "Status ![badge](https://x.dev/b.png)\ncontinues",
       '<p dir="ltr">Status <img src="https://x.dev/b.png" alt="badge">\ncontinues</p>',
