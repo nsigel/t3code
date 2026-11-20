@@ -269,7 +269,7 @@ const MATH_PROPERTIES = new Set([
   "strokeWidth",
   "textAnchor",
 ]);
-const MATH_STYLE = /^(?:display|vertical-align|overflow|margin)$/;
+const MATH_STYLE = /^(?:display|vertical-align|overflow|margin|white-space)$/;
 
 function sanitizeMath(node: Element): Element | null {
   if (!MATH_ELEMENTS.has(node.tagName)) return null;
