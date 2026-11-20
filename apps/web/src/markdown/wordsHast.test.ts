@@ -239,6 +239,33 @@ describe("wordsHast", () => {
     expect(html).toContain('aria-label="x^2"');
   });
 
+  it("shows Markdown the renderer fails on as its source, and renders the next as before", () => {
+    const options = { ...ASSISTANT, math: true };
+    const before = toHtml(wordsHast("$x^2$ and **bold**", options));
+    const source = "Pasted: $a\u001bb + c$ <b>&amp; text\n\nnext paragraph";
+    expect(toHtml(wordsHast(source, options))).toBe(
+      '<p dir="ltr">Pasted: $a\u001bb + c$ &#x3C;b>&#x26;amp; text<br><br>next paragraph</p>',
+    );
+    expect(toHtml(wordsHast("$x^2$ and **bold**", options))).toBe(before);
+  });
+
+  it.each([
+    ["$\\ce{H2O}$", '<span class="whitespace-pre-wrap">\\(\\ce{H2O}\\)</span>'],
+    ["$\\frac{1}{$", '<span class="whitespace-pre-wrap">\\(\\frac{1}{\\)</span>'],
+    ["$\\left( x$", '<span class="whitespace-pre-wrap">\\(\\left( x\\)</span>'],
+    [
+      "$$\n\\begin{pmatrix} 1 & 2\n$$",
+      '<span class="whitespace-pre-wrap">\\[\n\\begin{pmatrix} 1 &#x26; 2\n\\]</span>',
+    ],
+  ])("shows math Words cannot draw as its TeX source: %j", (markdown, source) => {
+    const html = wordsHtml(markdown, { math: true });
+    expect(html).not.toContain("<svg");
+    expect(html).toContain("data-markdown-copy=");
+    expect(html).toContain(source);
+    const preview = { fallback: "Thinking", maxLength: 80 };
+    expect(wordsHtml(markdown, { math: true, extensions: { preview } })).not.toMatch(/<svg|\n/);
+  });
+
   it.each([
     [
       "Status ![badge](https://x.dev/b.png)\ncontinues",
@@ -289,5 +316,8 @@ describe("wordsHast", () => {
     );
     expect(html).not.toMatch(/onload|javascript|position|<a |<script/);
     expect(html).toContain('aria-label="y"');
+    expect(toHtml(wordsHast("$x \\text{ if } y$", { ...ASSISTANT, math: true }))).toContain(
+      "white-space:pre",
+    );
   });
 });
