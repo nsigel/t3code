@@ -306,5 +306,8 @@ describe("wordsHast", () => {
     );
     expect(html).not.toMatch(/onload|javascript|position|<a |<script/);
     expect(html).toContain('aria-label="y"');
+    expect(toHtml(wordsHast("$x \\text{ if } y$", { ...ASSISTANT, math: true }))).toContain(
+      "white-space:pre",
+    );
   });
 });
