@@ -663,6 +663,7 @@ function breakLines(paragraph: Element, breaks: boolean) {
 function mathWrapper(svg: Element): Element {
   const tex = String(svg.properties.ariaLabel ?? "").trim();
   const display = /display:\s*block/.test(String(svg.properties.style ?? ""));
+  const source = display ? `\\[\n${tex}\n\\]` : `\\(${tex}\\)`;
   return {
     type: "element",
     tagName: "span",
@@ -670,15 +671,47 @@ function mathWrapper(svg: Element): Element {
       ? {
           className: ["chat-markdown-math-display", "block", "max-w-full", "overflow-x-auto"],
           dataMarkdownMath: "display",
-          dataMarkdownCopy: `\\[\n${tex}\n\\]\n\n`,
+          dataMarkdownCopy: `${source}\n\n`,
         }
       : {
           className: ["inline-block", "max-w-full", "align-middle"],
           dataMarkdownMath: "inline",
-          dataMarkdownCopy: `\\(${tex}\\)`,
+          dataMarkdownCopy: source,
         },
-    children: [svg],
+    children: [
+      !hasUnknownCommand(svg) && finished(tex)
+        ? svg
+        : {
+            type: "element",
+            tagName: "span",
+            properties: { className: ["whitespace-pre-wrap"] },
+            children: [{ type: "text", value: source }],
+          },
+    ],
   };
+}
+
+function hasUnknownCommand(node: Element): boolean {
+  return (
+    node.properties.fill === "#c00" ||
+    node.children.some((child) => child.type === "element" && hasUnknownCommand(child))
+  );
+}
+
+function finished(tex: string): boolean {
+  let braces = 0;
+  let environments = 0;
+  let delimiters = 0;
+  for (const [token] of tex.matchAll(/\\(?:[a-zA-Z]+|.)|[{}]/gs)) {
+    if (token === "{") braces++;
+    else if (token === "}") braces--;
+    else if (token === "\\begin") environments++;
+    else if (token === "\\end") environments--;
+    else if (token === "\\left") delimiters++;
+    else if (token === "\\right") delimiters--;
+    if (braces < 0 || environments < 0 || delimiters < 0) return false;
+  }
+  return braces === 0 && environments === 0 && delimiters === 0;
 }
 
 function restoreMath(node: Root | Element, math: Map<string, Element>) {
@@ -770,7 +803,11 @@ function flattenPreview(tree: Root, preview: NonNullable<MarkdownExtensions["pre
       fragments.push(take(node.value));
       return;
     }
-    if (node.type === "element" && node.properties.dataMarkdownMath !== undefined) {
+    if (
+      node.type === "element" &&
+      node.properties.dataMarkdownMath !== undefined &&
+      isElement(node.children[0], "svg")
+    ) {
       flush();
       // One line has no room for display math, which a preview shows inline.
       const svg = node.children[0];
